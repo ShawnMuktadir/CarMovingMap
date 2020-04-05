@@ -105,12 +105,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setTrafficEnabled(false);
         mMap.setIndoorEnabled(false);
         mMap.setBuildingsEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+//        mMap.setMyLocationEnabled(true);
+//        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         // Add a marker in My Location and move the camera
-        final LatLng sydney = new LatLng(23.7822, 90.3595);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("My Location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        final LatLng myLocationLatLng = new LatLng(23.7822, 90.3595);
+        mMap.addMarker(new MarkerOptions().position(myLocationLatLng).title("My Location"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocationLatLng));
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
                 .target(googleMap.getCameraPosition().target)
                 .zoom(17)
@@ -123,7 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             requestUrl = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "mode=driving&" +
                     "transit_routing_preference=less_driving&" +
-                    "origin=" + sydney.latitude + "," + sydney.longitude + "&" +
+                    "origin=" + myLocationLatLng.latitude + "," + myLocationLatLng.longitude + "&" +
                     "destination=" + destination + "&" +
                     "key=" + getResources().getString(R.string.google_direction_key);
             Log.d("URL", requestUrl);
@@ -188,7 +190,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 });
                                 polyLineAnimator.start();
                                 //Add car markar
-                                marker = mMap.addMarker(new MarkerOptions().position(sydney)
+                                marker = mMap.addMarker(new MarkerOptions().position(myLocationLatLng)
                                         .flat(true)
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car)));
 
@@ -265,7 +267,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return (float) ((90 - Math.toDegrees(Math.atan(lng / lat)) + 270));
         return -1;
     }
-
 
     private List<LatLng> decodePoly(String encoded) {
         List<LatLng> poly = new ArrayList<LatLng>();
