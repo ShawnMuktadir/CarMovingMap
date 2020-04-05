@@ -253,20 +253,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private float getBearing(LatLng startPosition, LatLng newPos) {
-        double lat = Math.abs(startPosition.latitude - newPos.latitude);
-        double lng = Math.abs(startPosition.longitude - newPos.longitude);
-
-        if (startPosition.latitude < newPos.latitude && startPosition.longitude < newPos.longitude)
-            return (float) (Math.toDegrees(Math.atan(lng / lat)));
-        else if ((startPosition.latitude >= newPos.latitude && startPosition.longitude < newPos.longitude))
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
-        else if ((startPosition.latitude >= newPos.latitude && startPosition.longitude >= newPos.longitude))
-            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
-        else if ((startPosition.latitude < newPos.latitude && startPosition.longitude >= newPos.longitude))
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat)) + 270));
-        return -1;
-    }
+//    private float getBearing(LatLng startPosition, LatLng newPos) {
+//        double lat = Math.abs(startPosition.latitude - newPos.latitude);
+//        double lng = Math.abs(startPosition.longitude - newPos.longitude);
+//
+//        if (startPosition.latitude < newPos.latitude && startPosition.longitude < newPos.longitude)
+//            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+//        else if ((startPosition.latitude >= newPos.latitude && startPosition.longitude < newPos.longitude))
+//            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
+//        else if ((startPosition.latitude >= newPos.latitude && startPosition.longitude >= newPos.longitude))
+//            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
+//        else if ((startPosition.latitude < newPos.latitude && startPosition.longitude >= newPos.longitude))
+//            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat)) + 270));
+//        return -1;
+//    }
 
     private List<LatLng> decodePoly(String encoded) {
         List<LatLng> poly = new ArrayList<LatLng>();
@@ -299,6 +299,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return poly;
     }
+
+    private static double degreeToRadians(double latLong) {
+        return (Math.PI * latLong / 180.0);
+    }
+
+    private static double radiansToDegree(double latLong) {
+        return (latLong * 180.0 / Math.PI);
+    }
+
+    public static float getBearing(LatLng startPosition, LatLng newPos) {
+
+        //Source
+        double lat1 = startPosition.latitude;
+        double lng1 = startPosition.longitude;
+
+        // destination
+        double lat2 = newPos.latitude;
+        double lng2 = newPos.longitude;
+
+        double fLat = degreeToRadians(lat1);
+        double fLong = degreeToRadians(lng1);
+        double tLat = degreeToRadians(lat2);
+        double tLong = degreeToRadians(lng2);
+
+        double dLon = (tLong - fLong);
+
+        float degree = (float)(radiansToDegree(Math.atan2(Math.sin(dLon) * Math.cos(tLat),
+                Math.cos(fLat) * Math.sin(tLat) - Math.sin(fLat) * Math.cos(tLat) * Math.cos(dLon))));
+
+        if (degree >= 0) {
+            return degree;
+        } else {
+            return 360 + degree;
+        }
+    }
+
+
 }
 
 
